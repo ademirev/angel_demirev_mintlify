@@ -1,0 +1,69 @@
+---
+title: "Tools for Humanity: People Ops, Systems, and Rewards"
+sidebarTitle: "Tools for Humanity"
+description: "How Angel Demirev is rebuilding people infrastructure at Tools for Humanity — Workday, comp redesign, AI-powered automations, and HRBP coverage for a global biometric identity company."
+---
+
+Tools for Humanity is the company behind World App and the Worldcoin protocol — building a global biometric identity and financial network that has enrolled tens of millions of people across dozens of countries. It's a technically ambitious, internationally complex organization operating at the intersection of cryptography, hardware (the Orb), and consumer finance. I joined in October 2025 as People Operations, Systems, and Rewards Manager, hired to bring the same kind of systematic, technically fluent people infrastructure I'd built at OpenAI — but tailored to TFH's specific scale, nuance, and global footprint.
+
+The mandate was broad: own systems (including a ground-up Workday implementation), rebuild performance and compensation, automate operational workflows, and provide HRBP partnership to the business. Below is a detailed breakdown of each area.
+
+## Areas of Ownership
+
+<AccordionGroup>
+  <Accordion title="Workday Implementation">
+    Led TFH's Workday implementation end-to-end, coordinating across IT, Legal, Finance, and People to configure a system that reflected TFH-specific organizational structure and process nuance — not just a default deployment. The scope included HCM, compensation, and absence modules, with careful attention to the data model and the business processes that would run on top of it.
+
+    Beyond the core implementation, I built a data warehouse alongside Workday to enable data integrity monitoring and natural language analyses of people data. The warehouse feeds dashboards and supports ad-hoc queries without requiring stakeholders to navigate Workday's reporting layer directly. This mirrors the approach I took at OpenAI — where the data warehouse became the foundation for scalable, self-service people analytics.
+
+    **Tools used:** Workday, custom ETL pipelines, internal data warehouse infrastructure.
+
+    **Outcome:** A live Workday instance configured for TFH's nuance, with a data layer on top that makes people data accessible, auditable, and trustworthy.
+  </Accordion>
+
+  <Accordion title="Performance & Compensation Redesign">
+    Inherited a performance and compensation program that lacked rigor in both feedback quality and pay consistency. Rebuilt both from the ground up with a clear philosophy: performance feedback should be evidence-based and specific, and compensation should minimize variance within levels while remaining competitive externally.
+
+    On the performance side, redesigned the review process to emphasize written, evidence-backed assessments and structured calibrations. Ran calibration sessions across the organization to normalize rating standards and surface the conversations managers had been avoiding.
+
+    On the compensation side, re-benchmarked roles, rebuilt the job architecture, and remodeled pay ranges to tighten variance within levels. Ran compensation modeling to project outcomes before the cycle ran, allowing leadership to make informed tradeoff decisions rather than retroactively managing surprises.
+
+    Built automations for award communication and letter distribution using **Claude Code** and **Codex** — generating individualized comp letters at scale and routing them through approval workflows without manual touchpoints.
+
+    **Outcome:** A comp program with clearer philosophy, reduced intra-level variance, and fully automated letter generation and distribution.
+  </Accordion>
+
+  <Accordion title="Payroll & Equity Automation">
+    Payroll and equity processing at TFH involved significant manual data movement, creating both operational drag and data quality risk. I redesigned these workflows to eliminate human touchpoints wherever possible.
+
+    For payroll, built automated reconciliation tooling that compares source data against payroll inputs before each cycle runs — catching discrepancies before they become errors. Introduced large-scale data quality audits across the People data ecosystem to surface integrity issues systematically rather than reactively.
+
+    For equity, automated grant workflows from approval through Carta processing, reducing the cycle time and eliminating the copy-paste steps that had historically introduced errors. Built comprehensive reconciliation processes to ensure grant data in Workday, Carta, and the data warehouse stays in sync.
+
+    **Tools used:** Workday, Carta, Claude Code, Codex, custom automation scripts.
+
+    **Outcome:** Payroll and equity workflows that run with minimal manual intervention, with systematic auditing that catches issues before they propagate.
+  </Accordion>
+
+  <Accordion title="HRBP Coverage">
+    In addition to the systems and operations scope, I provide HRBP coverage to the business — including some of the most sensitive and consequential people work: investigations, involuntary exits, and executive partnership on org design and workforce decisions.
+
+    Running involuntary exits well requires precision: the right documentation, the right sequencing, coordination with Legal and Finance, and delivery that is direct and humane. I've managed these processes end-to-end, including RIF planning, individual performance exits, and role eliminations tied to restructuring.
+
+    For investigations, I conduct thorough, impartial reviews with appropriate documentation and follow-through — balancing the need for rigor with the reality that these situations involve real people under stress.
+
+    **Outcome:** Consistent, legally sound handling of sensitive situations, with executives who have a trusted partner for the hardest calls.
+  </Accordion>
+
+  <Accordion title="Team Culture & Operational Excellence">
+    Beyond the specific programs, I've focused on building a team culture characterized by technical fluency, systems thinking, and what I'd call tasteful operational excellence — the discipline to build things properly without over-engineering them, and the taste to know the difference.
+
+    Scaled operational support by implementing global SOPs and training, standardizing intake processes, automating onboarding and letter issuance workflows, and building a support-as-a-product mindset on the team. The goal is a People function that feels like a well-run internal product — predictable, self-service where possible, and staffed by people who are continuously raising their own technical bar.
+
+    **Outcome:** A People team that operates with the efficiency of a much larger function, with clear processes, documented runbooks, and a team that actively seeks automation opportunities rather than waiting to be asked.
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+  The compensation letter automation and payroll reconciliation tooling at TFH were built using **Claude Code** and **OpenAI Codex** — writing and iterating on production scripts directly, without a dedicated engineering resource. This reflects a broader orientation toward AI-assisted building that's core to how I work: when a process is manual and automatable, I don't wait for an engineer to prioritize it. I build it. This is directly relevant to Mintlify's AI-forward culture and the expectation that the Head of People will be a builder, not just a program manager.
+</Note>

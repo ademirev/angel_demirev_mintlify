@@ -1,0 +1,176 @@
+---
+title: "Systems and Operations: Building People Ops as a Product"
+sidebarTitle: "Systems & Ops"
+description: "Angel's product-minded approach to HR ops — HRIS strategy, technical automation, data pipelines, and self-service infrastructure that scales without adding headcount."
+---
+
+Most people operations teams are organized around requests. Someone emails HR, someone responds. Someone has a question about their equity, someone looks it up. A new hire needs their system access set up, someone opens a ticket. This model works at 15 people and breaks at 65. By the time you've doubled in size, you've also doubled the volume of requests, questions, and edge cases — without doubling the ops team. The result is a team that's always behind, always reactive, and increasingly unable to do the high-judgment work that actually requires a human.
+
+My approach is different. I treat people operations like a product. That means clear ownership, defined service levels, documented processes, automation where the task is repetitive and the logic is determinable, and continuous improvement based on where the bottlenecks actually are. It means building self-service so that the answer to "how does my equity vest?" is a well-designed resource an employee finds in 30 seconds, not a 48-hour wait for an HR response. And it means being technically fluent enough to build the tooling myself — not just configure what vendors sell.
+
+## Support as a Product
+
+The first step in productizing people operations is standardizing the intake. When requests arrive through a dozen different channels (email, Slack, a tap on the shoulder, a message to the CHRO), you can't track them, measure them, or improve them. I implement structured intake — typically a lightweight ticketing system or a dedicated ops channel with clear routing — so that every request is visible, assigned, and trackable.
+
+From intake, the work becomes: which requests recur often enough to warrant a documented SOP? Which SOPs can be turned into self-service resources? Which processes can be automated entirely? The answer is usually: more than you'd expect.
+
+SOPs matter because they create consistency and reduce cognitive load. When an offboarding SOP exists, a new HR coordinator can run an offboarding without reinventing the process. When a leave administration SOP exists, a manager covering for an absent HR partner can answer the most common questions. SOPs aren't bureaucracy — they're institutional knowledge made accessible.
+
+Training matters because the people doing the work need to understand the systems, not just follow the steps. I invest in training managers and coordinators on the reasoning behind processes, not just the mechanics. A manager who understands why equity grant processing requires a specific data sequence is less likely to create errors by skipping steps.
+
+## Technical Fluency as a Force Multiplier
+
+The most significant shift in my practice over the last few years has been building technical fluency as a core part of how I operate — not as a nice-to-have, but as a force multiplier that changes what's possible.
+
+At OpenAI, I built API tooling to move data across systems: offer approvals flowing into Workday, comp letters generated and distributed programmatically, equity processing automated with data validation, benefits reconciliation running on a schedule instead of quarterly manual exports. At Tools for Humanity, I used Claude Code and Codex to build automations for award communications and letter distribution — taking workflows that required hours of manual work and turning them into processes that ran with a single trigger and a human review.
+
+This isn't about replacing HR judgment with code. It's about removing the parts of the work that don't require judgment — the data movement, the formatting, the distribution, the reconciliation — so that human attention can go to the parts that do.
+
+The practical implication: when I encounter a recurring workflow that involves moving structured data from one system to another, my first instinct is to automate it. Not to buy a point solution, not to hire someone to do it manually, but to build the integration. I know enough Python and enough API design to build it myself, and I use AI coding tools to accelerate that work significantly.
+
+## HRIS Strategy
+
+An HRIS is the operational backbone of people ops. Choosing the right platform, implementing it correctly, and maintaining it well are among the highest-leverage decisions a growing company makes in this space.
+
+I've run two major HRIS implementations: Workday at OpenAI (from business case through go-live) and Workday at Tools for Humanity (leading the implementation across IT, Legal, Finance, and People). These experiences taught me what actually matters in an implementation, which is different from what vendors emphasize.
+
+**What to look for in a platform.** For a company at Mintlify's stage and trajectory, I'd evaluate platforms on: data model flexibility (can it represent your actual org structure, not a generic one?), integration ecosystem (can it connect to your ATS, your payroll, your equity platform without custom middleware?), reporting capability (can your team pull the data they need without waiting for IT?), and implementation timeline (a 12-month implementation is a liability at a company growing this fast). Workday is powerful but heavyweight. Rippling is lighter and faster to implement. The right choice depends on what you need now versus in three years.
+
+**How to implement without losing nuance.** The biggest implementation failure mode is treating the HRIS configuration as a technical project. It isn't — it's an opportunity to make explicit every implicit decision the company has been making about how people, jobs, and org structure work. If you don't answer those questions before you configure, the system answers them for you, usually badly. I run implementations with a design phase that forces the right decisions first: how are jobs structured? how are levels defined? what are the business rules for compensation changes? what does the org hierarchy actually look like? Those answers drive the configuration.
+
+## Data and Analytics
+
+A people data warehouse is the difference between HR that reports what happened and HR that anticipates what will happen. I've built people data warehouses at both OpenAI and Tools for Humanity — pulling from HRIS, ATS, payroll, and other systems into a centralized store, with ETL pipelines that keep it current and role-based access controls that make the data available to the right people without exposing what shouldn't be exposed.
+
+On top of the warehouse, I build:
+- **Executive dashboards** — headcount health, attrition trend, time-to-fill, span of control, offer acceptance rate
+- **Self-service access** — managers can pull their own team data, finance can see headcount against plan, recruiting can see pipeline health
+- **Integrity monitoring** — automated checks that surface data anomalies (duplicate records, compensation outside bands, missing fields) before they compound into reporting errors
+
+The monitoring piece is underrated. Bad people data is endemic to fast-growing companies — systems fall out of sync, manual entries introduce errors, org changes don't propagate correctly. Automated integrity checks run nightly and surface issues before they reach a board presentation or a payroll run.
+
+## An Example: Automating a Comp Letter Workflow
+
+The kind of automation I build looks something like this:
+
+<CodeGroup>
+```python Comp Letter Automation (Conceptual)
+import anthropic
+import requests
+
+# 1. Pull approved comp changes from HRIS after review cycle closes
+def fetch_approved_comp_changes(hris_client, cycle_id):
+    """
+    Query HRIS API for finalized comp changes from the review cycle.
+    Returns list of {employee_id, name, new_salary, increase_pct,
+                     effective_date, manager_name, letter_template_id}
+    """
+    return hris_client.get(
+        f"/compensation/cycles/{cycle_id}/approved_changes"
+    )
+
+# 2. Generate personalized letter for each employee using Claude
+def generate_comp_letter(employee_data, template):
+    client = anthropic.Anthropic()
+    prompt = f"""
+    Generate a comp letter using this template: {template}
+    
+    Employee details:
+    - Name: {employee_data['name']}
+    - New base salary: ${employee_data['new_salary']:,}
+    - Increase: {employee_data['increase_pct']}%
+    - Effective date: {employee_data['effective_date']}
+    - Manager: {employee_data['manager_name']}
+    
+    Tone: warm, direct, specific to their increase amount.
+    Include the effective date and next steps for acknowledgment.
+    """
+    message = client.messages.create(
+        model="claude-opus-4-5",
+        max_tokens=1024,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return message.content[0].text
+
+# 3. Store letters, log for audit trail, queue for delivery
+def process_cycle(hris_client, cycle_id, doc_store, email_queue):
+    changes = fetch_approved_comp_changes(hris_client, cycle_id)
+    
+    for employee in changes:
+        template = fetch_template(employee['letter_template_id'])
+        letter_text = generate_comp_letter(employee, template)
+        
+        # Store for manager review before send
+        doc_id = doc_store.save(
+            employee_id=employee['employee_id'],
+            content=letter_text,
+            status="pending_manager_review"
+        )
+        
+        # Notify manager to review within 48h before employee delivery
+        email_queue.add(
+            to=employee['manager_email'],
+            subject=f"Review comp letter for {employee['name']}",
+            body=f"Please review before it sends: {doc_store.url(doc_id)}"
+        )
+    
+    return f"Queued {len(changes)} letters for manager review."
+```
+
+```python Data Integrity Monitoring (Conceptual)
+# Nightly integrity checks on HRIS data
+def run_integrity_checks(warehouse_client, alert_channel):
+    checks = [
+        # Comp outside band
+        """
+        SELECT e.name, e.level, e.salary,
+               b.band_min, b.band_max
+        FROM employees e
+        JOIN comp_bands b ON e.level = b.level
+                         AND e.geo_zone = b.geo_zone
+        WHERE e.salary < b.band_min 
+           OR e.salary > b.band_max * 1.15
+        """,
+        # Missing manager assignment
+        """
+        SELECT name, employee_id, start_date
+        FROM employees
+        WHERE manager_id IS NULL
+          AND employment_status = 'active'
+          AND start_date < CURRENT_DATE - INTERVAL '7 days'
+        """,
+        # Equity grants approved but not processed
+        """
+        SELECT g.grant_id, e.name, g.approved_date, g.shares
+        FROM equity_grants g
+        JOIN employees e ON g.employee_id = e.employee_id
+        WHERE g.status = 'approved'
+          AND g.processed_date IS NULL
+          AND g.approved_date < CURRENT_DATE - INTERVAL '14 days'
+        """
+    ]
+    
+    for query in checks:
+        results = warehouse_client.query(query)
+        if results:
+            alert_channel.post(
+                f"⚠️ Data integrity flag: {len(results)} records need review",
+                attachments=results.to_csv()
+            )
+```
+</CodeGroup>
+
+This isn't production code — it's a conceptual illustration of the pattern. The real implementations are more robust, more tested, and more tightly integrated with specific system APIs. But the logic is the same: structured data in, validated output, human review gate before anything reaches an employee, and an audit trail throughout.
+
+<Note>
+  **Stack I know well**
+
+  - **Rippling** — HRIS, payroll, device management; strong API surface, fast to implement
+  - **Workday** — enterprise HRIS; powerful data model, heavyweight implementation, best for 200+ person companies
+  - **Ashby** — ATS; excellent reporting, strong candidate experience, clean HRIS integration
+  - **Deel** — global contractor and EOR management; good for international expansion before entity setup
+  - **Claude Code / Codex** — AI-assisted development for automations, data pipelines, and tooling I build in-house
+  - **Custom API tooling** — Python-based integrations across HR, finance, and equity systems; the glue that makes the stack actually work together
+
+  At Mintlify's stage, I'd assess the current stack against what's actually needed for 65 → 150 people — not to replace tools for their own sake, but to make sure the foundation can support the build without requiring a full re-platform in 18 months.
+</Note>

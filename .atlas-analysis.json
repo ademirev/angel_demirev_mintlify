@@ -1,0 +1,69 @@
+{
+  "projectType": "general",
+  "projectName": "Angel Demirev — Head of People Application",
+  "projectDescription": "A curated application from Angel Demirev for the Mintlify Head of People role, presenting experience, philosophy, and a 90-day plan.",
+  "theme": "willow",
+  "primaryColor": "#443ccc",
+  "lightColor": "#a49ce4",
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Application",
+        "groups": [
+          {
+            "group": "Introduction",
+            "pages": [
+              "introduction",
+              "why-mintlify"
+            ]
+          },
+          {
+            "group": "Experience",
+            "pages": [
+              "experience/overview",
+              "experience/tools-for-humanity",
+              "experience/openai",
+              "experience/google"
+            ]
+          },
+          {
+            "group": "Leadership Philosophy",
+            "pages": [
+              "philosophy/people-strategy",
+              "philosophy/compensation",
+              "philosophy/performance",
+              "philosophy/systems-and-ops"
+            ]
+          },
+          {
+            "group": "For Mintlify",
+            "pages": [
+              "mintlify/fit",
+              "mintlify/90-day-plan",
+              "mintlify/closing"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "9+ years progressive People/HR leadership at high-growth AI companies",
+    "Deep compensation fluency: benchmarking, bands, equity refresh, job architecture",
+    "Lived the 50→150+ scaling transition at OpenAI",
+    "Builder mindset: automated workflows using Claude Code, Codex, and custom API tooling",
+    "Full Workday implementation experience (business case through go-live)",
+    "Multi-state and international employment compliance",
+    "Data warehouse development and people analytics",
+    "Executive-level HRBP: investigations, exits, founder partnership"
+  ],
+  "publicApiSurface": [
+    "Rippling",
+    "Ashby",
+    "Workday",
+    "Deel",
+    "Claude Code / Codex automations",
+    "Custom API-based HR workflow tooling"
+  ]
+}
