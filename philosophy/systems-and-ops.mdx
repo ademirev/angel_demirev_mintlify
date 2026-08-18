@@ -1,7 +1,7 @@
 ---
 title: "Systems and Operations: Building People Ops as a Product"
 sidebarTitle: "Systems & Ops"
-description: "Angel's product-minded approach to HR ops — HRIS strategy, technical automation, data pipelines, and self-service infrastructure that scales without adding headcount."
+description: "Angel treats people ops as a product: HRIS strategy, technical automation, data pipelines, and self-service that scales without added headcount."
 ---
 
 Most people operations teams are organized around requests. Someone emails HR, someone responds. Someone has a question about their equity, someone looks it up. A new hire needs their system access set up, someone opens a ticket. This model works at 15 people and breaks at 65. By the time you've doubled in size, you've also doubled the volume of requests, questions, and edge cases — without doubling the ops team. The result is a team that's always behind, always reactive, and increasingly unable to do the high-judgment work that actually requires a human.
@@ -56,32 +56,37 @@ The kind of automation I build looks something like this:
 <CodeGroup>
 ```python Comp Letter Automation (Conceptual)
 import anthropic
-import requests
 
 # 1. Pull approved comp changes from HRIS after review cycle closes
 def fetch_approved_comp_changes(hris_client, cycle_id):
     """
     Query HRIS API for finalized comp changes from the review cycle.
     Returns list of {employee_id, name, new_salary, increase_pct,
-                     effective_date, manager_name, letter_template_id}
+                     effective_date, manager_name, manager_email,
+                     letter_template_id}
     """
     return hris_client.get(
         f"/compensation/cycles/{cycle_id}/approved_changes"
     )
 
-# 2. Generate personalized letter for each employee using Claude
+# 2. Fetch the letter template for a given template ID
+def fetch_template(hris_client, template_id):
+    """Retrieve the letter template string from the HRIS template store."""
+    return hris_client.get(f"/letter-templates/{template_id}")
+
+# 3. Generate personalized letter for each employee using Claude
 def generate_comp_letter(employee_data, template):
     client = anthropic.Anthropic()
     prompt = f"""
     Generate a comp letter using this template: {template}
-    
+
     Employee details:
     - Name: {employee_data['name']}
     - New base salary: ${employee_data['new_salary']:,}
     - Increase: {employee_data['increase_pct']}%
     - Effective date: {employee_data['effective_date']}
     - Manager: {employee_data['manager_name']}
-    
+
     Tone: warm, direct, specific to their increase amount.
     Include the effective date and next steps for acknowledgment.
     """
@@ -92,28 +97,28 @@ def generate_comp_letter(employee_data, template):
     )
     return message.content[0].text
 
-# 3. Store letters, log for audit trail, queue for delivery
+# 4. Store letters, log for audit trail, queue for delivery
 def process_cycle(hris_client, cycle_id, doc_store, email_queue):
     changes = fetch_approved_comp_changes(hris_client, cycle_id)
-    
+
     for employee in changes:
-        template = fetch_template(employee['letter_template_id'])
+        template = fetch_template(hris_client, employee['letter_template_id'])
         letter_text = generate_comp_letter(employee, template)
-        
+
         # Store for manager review before send
         doc_id = doc_store.save(
             employee_id=employee['employee_id'],
             content=letter_text,
             status="pending_manager_review"
         )
-        
+
         # Notify manager to review within 48h before employee delivery
         email_queue.add(
             to=employee['manager_email'],
             subject=f"Review comp letter for {employee['name']}",
             body=f"Please review before it sends: {doc_store.url(doc_id)}"
         )
-    
+
     return f"Queued {len(changes)} letters for manager review."
 ```
 
