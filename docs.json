@@ -1,58 +1,15 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "Angel Demirev — Head of People",
+  "name": "Angel Demirev",
   "theme": "willow",
   "favicon": "https://media.brand.dev/49290785-8d90-4ca4-bd1e-ec417f1378be.svg",
   "colors": {
     "primary": "#443ccc",
     "light": "#a49ce4"
   },
-  "navbar": {
-    "primary": {
-      "type": "github",
-      "href": "https://github.com/mintlify"
-    }
-  },
   "navigation": {
-    "tabs": [
-      {
-        "tab": "Application",
-        "groups": [
-          {
-            "group": "Introduction",
-            "pages": [
-              "introduction",
-              "why-mintlify"
-            ]
-          },
-          {
-            "group": "Experience",
-            "pages": [
-              "experience/overview",
-              "experience/tools-for-humanity",
-              "experience/openai",
-              "experience/google"
-            ]
-          },
-          {
-            "group": "Leadership Philosophy",
-            "pages": [
-              "philosophy/people-strategy",
-              "philosophy/compensation",
-              "philosophy/performance",
-              "philosophy/systems-and-ops"
-            ]
-          },
-          {
-            "group": "For Mintlify",
-            "pages": [
-              "mintlify/fit",
-              "mintlify/90-day-plan",
-              "mintlify/closing"
-            ]
-          }
-        ]
-      }
+    "pages": [
+      "index"
     ]
   }
 }
